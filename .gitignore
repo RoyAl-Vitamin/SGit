@@ -26,3 +26,4 @@ hs_err_pid*
 SGit/.idea/
 SGit/.gradle/
 SGit/build/
+SGit/out/

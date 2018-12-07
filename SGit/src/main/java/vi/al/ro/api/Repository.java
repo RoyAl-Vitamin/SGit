@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("repository")
 public class Repository {
@@ -21,6 +23,20 @@ public class Repository {
     @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
     public ResponseEntity<?> getGroupEntireCollection() {
 //        logger.info("#getGroupEntireCollection: get all");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(null)
+                .body("2");
+    }
+
+    /**
+     * Возвращает всех пользователей
+     * @return {@link vi.al.ro}'s
+     */
+    @RequestMapping(value = "/setRepository", produces = "application/json", method = RequestMethod.POST)
+    public ResponseEntity<?> setRepository() {
+        logger.info("Устанавливаем репо");
 
         return ResponseEntity
                 .status(HttpStatus.OK)
