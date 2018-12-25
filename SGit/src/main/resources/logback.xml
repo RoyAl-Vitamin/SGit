@@ -38,8 +38,13 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG "com.baeldung*" at TRACE level -->
+    <!-- LOG at TRACE level -->
     <logger name="test" level="trace" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="test2" level="debug" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>

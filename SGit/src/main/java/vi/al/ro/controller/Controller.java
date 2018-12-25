@@ -1,51 +1,63 @@
 package vi.al.ro.controller;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import vi.al.ro.beans.RepoBean;
-import vi.al.ro.entity.Repo;
+import vi.al.ro.configuration.RepoComponent;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 @org.springframework.stereotype.Controller
 public class Controller {
 
-    private final RepoBean repoBean;
+    private final RepoComponent repo;
 
-    public Controller(RepoBean repoBean) {
-        this.repoBean = repoBean;
+    public Controller(RepoComponent repo) {
+        this.repo = repo;
     }
-
-    @Value("${welcome.message:test}")
-    private String message = "Hello World";
 
     @RequestMapping("/")
     public String index(Map<String, Object> model) {
-        model.put("message", this.message);
-        return "index";
+        return "redirect:/index.html";
     }
 
-    @RequestMapping("/listRepo")
-    public String listRepos(Map<String, Object> model) {
+    @RequestMapping("/clone")
+    public String indexClone(Map<String, Object> model, @RequestBody MultiValueMap<String, String> formData) {
 
-        Set<Repo> listRepos = repoBean.getRepos();
-        model.put("repos", listRepos);
-        return "reposList";
+        String repoName = formData.getFirst("name");
+        String repoPath = formData.getFirst("url");
+
+        repo.setName(repoName);
+        repo.setPath(repoPath);
+
+        repo.cloneRepo();
+
+//        List<String> branchesName = repo.getBranches();
+//        List<File> files = repo.getFiles("");
+//
+//        model.put("repoName", repoName);
+//        model.put("branches", branchesName);
+//        model.put("files", files);
+        return "repo";
     }
 
-    @RequestMapping("/repo/{repo_name}")
-    public String repoBrowser(Map<String, Object> model, @PathVariable("repo_name") String repoName) {
+    @RequestMapping("/create")
+    public String indexCreate(Map<String, Object> model) {
+        return "repo";
+    }
 
-        Optional<Repo> repo = repoBean.getRepoByName(repoName);
-        if (repo.isPresent()) {
-            model.put("repo", repo.get());
-            return "repo";
-        } else {
-            return "redirect:/404";
-        }
+    @RequestMapping("/repo/{repo_path}")
+    public String indexClone(Map<String, Object> model, @PathVariable("repo_path") String repoPath) {
+
+        List<String> branchesName = repo.getBranches();
+        List<File> files = repo.getFiles(repoPath);
+
+        model.put("repoName", repo.getName());
+        model.put("branches", branchesName);
+        model.put("files", files);
+        return "repo";
     }
 }

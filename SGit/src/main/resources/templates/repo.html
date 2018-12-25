@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
     <title>Repo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css"/>
 </head>
 <body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:text="${repoName}">Spring Boot</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">something</a></li>
+                <li><a href="#about">about</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    List of branches:
+    <select class="selectpicker">
+        <th:block th:each="branch : ${branches}">
+            <option th:text="${branch}">master</option>
+        </th:block>
+    </select>
+    <br>
+    <th:block th:each="file : ${files}">
+        <a th:href="@{${#httpServletRequest.requestURI} + '/' + ${file.getName()}}">
+            <div th:text="${file.getName()}"></div>
+        </a>
+    </th:block>
 
+</div>
 </body>
 </html>

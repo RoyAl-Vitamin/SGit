@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create repo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <form method="post" action="/create">
+        <label for="name">Enter a name repo:</label>
+        <input type="text" name="name" id="name" required>
+        <input type="submit" value="Create">
+    </form>
+</div>
+</body>
+</html>
