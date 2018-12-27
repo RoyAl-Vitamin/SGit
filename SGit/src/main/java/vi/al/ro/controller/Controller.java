@@ -41,7 +41,7 @@ public class Controller {
 //        model.put("repoName", repoName);
 //        model.put("branches", branchesName);
 //        model.put("files", files);
-        return "repo";
+        return "redirect:/repo";
     }
 
     @RequestMapping("/create")
@@ -49,8 +49,13 @@ public class Controller {
         return "repo";
     }
 
+    @RequestMapping(value = {"/repo", "/repo/"})
+    public String indexCloneWithoutParam(Map<String, Object> model) {
+        return indexClone(model, "");
+    }
+
     @RequestMapping("/repo/{repo_path}")
-    public String indexClone(Map<String, Object> model, @PathVariable("repo_path") String repoPath) {
+    public String indexClone(Map<String, Object> model, @PathVariable(value = "repo_path", required = false) String repoPath) {
 
         List<String> branchesName = repo.getBranches();
         List<File> files = repo.getFiles(repoPath);
