@@ -29,16 +29,24 @@
     </select>
     <br>
     <div th:if="${#ctx.containsVariable('files')}">
+        <div th:if="${files.size()} == 0">
+            Folder is empty!
+        </div>
         <th:block th:each="file : ${files}">
-            <a th:href="@{${#httpServletRequest.requestURI} + '/' + ${file.getName()}}">
+            <a class="icon " th:classappend="${file.isDirectory()} ? icon-folder : icon-file" th:href="@{${#httpServletRequest.requestURI} + '/' + ${file.getName()}}">
                 <div th:text="${file.getName()}"></div>
             </a>
         </th:block>
     </div>
-    <div th:if="${#ctx.containsVariable('file')}">
-        <th:block th:each="line : ${file}">
-            <p th:text="${line}"></p>
-        </th:block>
+    <div th:if="${#ctx.containsVariable('file')}" class="file-body">
+        <div th:if="${file.size()} == 0">
+            File is empty!
+        </div>
+        <samp>
+            <th:block th:each="line : ${file}">
+                <p th:text="${line}"></p>
+            </th:block>
+        </samp>
     </div>
 
 

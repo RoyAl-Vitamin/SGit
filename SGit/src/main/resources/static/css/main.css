@@ -4,3 +4,21 @@ h1 {
 h2 {
     color: #ff6048;
 }
+.file-body {
+    background-color: rgb(171, 255, 174);
+    padding: 10px;
+    border: 5px solid #dbdbdb;
+    border-radius: 10px;
+}
+.icon {
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 25px;
+    display: block;
+}
+.icon-file {
+    background-image: url(../img/document-icon.png);
+}
+.icon-folder {
+    background-image: url(../img/folder-icon.png);
+}

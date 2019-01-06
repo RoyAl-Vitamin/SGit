@@ -66,13 +66,6 @@ public class RepoComponent {
         }
     }
 
-    public boolean isExist() {
-        if (name != null & path != null && name.length() > 0 && path.length() > 0) {
-            return true;
-        }
-        return false;
-    }
-
     public List<String> getBranches() {
         // List all branches
         List<Ref> call;
