@@ -103,12 +103,29 @@ public class RepoComponent {
     }
 
     public List<File> getFiles(String repoPath) {
+        File file = findEntryPoint(repoPath);
+
+        return getFiles(file);
+    }
+
+    public boolean isDir(String repoPath) {
+        File file = findEntryPoint(repoPath);
+
+        return file.isDirectory();
+    }
+
+    public String getFullPath(String repoPath) {
+        File file = new File(localPath, repoPath);
+        return file.getAbsolutePath();
+    }
+
+    private File findEntryPoint(String repoPath) {
         File file;
         if (repoPath == null || repoPath.length() == 0) {
             file = localPath;
         } else {
             file = new File(localPath, repoPath);
         }
-        return getFiles(file);
+        return file;
     }
 }

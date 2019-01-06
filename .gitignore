@@ -27,3 +27,4 @@ SGit/.idea/
 SGit/.gradle/
 SGit/build/
 SGit/out/
+SGit/*.iml

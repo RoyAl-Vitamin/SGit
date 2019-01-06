@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vi.al.ro.configuration.RepoComponent;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -35,18 +40,12 @@ public class Controller {
 
         repo.cloneRepo();
 
-//        List<String> branchesName = repo.getBranches();
-//        List<File> files = repo.getFiles("");
-//
-//        model.put("repoName", repoName);
-//        model.put("branches", branchesName);
-//        model.put("files", files);
         return "redirect:/repo";
     }
 
     @RequestMapping("/create")
     public String indexCreate(Map<String, Object> model) {
-        return "repo";
+        return "redirect:/repo";
     }
 
     @RequestMapping(value = {"/repo", "/repo/"})
@@ -58,11 +57,21 @@ public class Controller {
     public String indexClone(Map<String, Object> model, @PathVariable(value = "repo_path", required = false) String repoPath) {
 
         List<String> branchesName = repo.getBranches();
-        List<File> files = repo.getFiles(repoPath);
+        if (repo.isDir(repoPath)) {
+            List<File> files = repo.getFiles(repoPath);
+            model.put("files", files);
+        } else {
+            List<String> lines = null;
+            try {
+                lines = Files.readAllLines(Paths.get(repo.getFullPath(repoPath)), Charset.defaultCharset()); //StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            model.put("file", lines);
+        }
 
         model.put("repoName", repo.getName());
         model.put("branches", branchesName);
-        model.put("files", files);
         return "repo";
     }
 }

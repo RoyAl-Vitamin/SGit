@@ -28,11 +28,19 @@
         </th:block>
     </select>
     <br>
-    <th:block th:each="file : ${files}">
-        <a th:href="@{${#httpServletRequest.requestURI} + '/' + ${file.getName()}}">
-            <div th:text="${file.getName()}"></div>
-        </a>
-    </th:block>
+    <div th:if="${#ctx.containsVariable('files')}">
+        <th:block th:each="file : ${files}">
+            <a th:href="@{${#httpServletRequest.requestURI} + '/' + ${file.getName()}}">
+                <div th:text="${file.getName()}"></div>
+            </a>
+        </th:block>
+    </div>
+    <div th:if="${#ctx.containsVariable('file')}">
+        <th:block th:each="line : ${file}">
+            <p th:text="${line}"></p>
+        </th:block>
+    </div>
+
 
 </div>
 </body>
