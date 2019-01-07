@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Commit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css"/>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:text="${repoName}">Spring Boot</a>
+        </div>
+        <div id="navbar" class="/*collapse*/ navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/repo">Repo root</a></li>
+                <li class="active"><a href="/commit">Commit</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="starter-template">
+        <h1>Spring Boot Web Thymeleaf Example</h1>
+    </div>
+
+    List of commit:
+
+    <div th:if="${commits.size()} == 0">
+        Collection of commit is empty!
+    </div>
+
+    <th:block th:each="commit : ${commits}">
+        <a class="message">
+            <div th:text="${'Author: ' + commit.getAuthorIdent().getName()}"></div>
+
+            <div th:text="${#dates.format(new java.util.Date(commit.getCommitTime() * 1000L))}"></div>
+
+            <div th:text="${'Message: ' + commit.getFullMessage()}"></div>
+
+            <div th:text="${'SHA1: ' + commit.getName()}"></div>
+        </a>
+    </th:block>
+</div>
+</body>
+</html>

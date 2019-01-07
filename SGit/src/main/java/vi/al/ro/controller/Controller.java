@@ -27,7 +27,7 @@ public class Controller {
         this.repo = repo;
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = {"/", "/index"})
     public String index(Map<String, Object> model) {
         return "redirect:/index.html";
     }
@@ -65,6 +65,8 @@ public class Controller {
 
     private String indexClone(Map<String, Object> model, String repoPath) {
 
+        if (!repo.isConnected()) return "redirect:/index.html";
+
         List<String> branchesName = repo.getBranches();
         if (repo.isDir(repoPath)) {
             List<File> files = repo.getFiles(repoPath);
@@ -94,5 +96,15 @@ public class Controller {
         model.put("repoName", repo.getName());
         model.put("branches", branchesName);
         return "repo";
+    }
+
+    @RequestMapping("/commit")
+    public String commits(Map<String, Object> model) {
+
+        if (!repo.isConnected()) return "redirect:/index.html";
+
+        model.put("commits", repo.getCommits());
+        model.put("repoName", repo.getName());
+        return "commit";
     }
 }

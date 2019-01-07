@@ -22,3 +22,7 @@ h2 {
 .icon-folder {
     background-image: url(../img/folder-icon.png);
 }
+.message {
+    margin: 20px;
+    display: block;
+}

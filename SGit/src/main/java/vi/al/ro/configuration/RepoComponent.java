@@ -2,7 +2,11 @@ package vi.al.ro.configuration;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,10 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -120,5 +121,86 @@ public class RepoComponent {
             file = new File(localPath, repoPath);
         }
         return file;
+    }
+
+    public List<RevCommit> getCommits() {
+        List<Ref> call;
+        try {
+            call = git.branchList().call();
+        } catch (GitAPIException e) {
+            logger.error("GitAPIException == ", e);
+            return Collections.EMPTY_LIST;
+        }
+
+        Repository repo = git.getRepository();
+        RevWalk walk = new RevWalk(repo);
+
+        List<RevCommit> listCommits = new ArrayList<>();
+        for (Ref branch : call) {
+
+            String branchName = branch.getName();
+
+            System.out.println("Commits of branch: " + branch.getName());
+            System.out.println("-------------------------------------");
+
+            Iterable<RevCommit> commits = null;
+            try {
+                commits = git.log().all().call();
+            } catch (GitAPIException e) {
+                logger.error("GitAPIException == ", e);
+            } catch (IOException e) {
+                logger.error("IOException == ", e);
+            }
+
+            if (commits == null) {
+                return Collections.EMPTY_LIST;
+            }
+
+            for (RevCommit commit : commits) {
+                boolean foundInThisBranch = false;
+
+                RevCommit targetCommit = null;
+                try {
+                    targetCommit = walk.parseCommit(repo.resolve(commit.getName()));
+                } catch (IOException e) {
+                    logger.error("IOException == ", e);
+                    continue;
+                }
+
+                for (Map.Entry<String, Ref> e : repo.getAllRefs().entrySet()) {
+
+                    if (e.getKey().startsWith(Constants.R_HEADS)) {
+
+                        try {
+                            if (walk.isMergedInto(targetCommit, walk.parseCommit(e.getValue().getObjectId()))) {
+
+                                String foundInBranch = e.getValue().getName();
+                                if (branchName.equals(foundInBranch)) {
+                                    foundInThisBranch = true;
+                                    break;
+                                }
+                            }
+                        } catch (IOException e1) {
+                            logger.error("IOException == ", e);
+                        }
+                    }
+                }
+
+                if (foundInThisBranch) {
+                    listCommits.add(commit);
+                    /*
+                    System.out.println(commit.getName());
+                    System.out.println(commit.getAuthorIdent().getName());
+                    System.out.println(new Date(commit.getCommitTime() * 1000L));
+                    System.out.println(commit.getFullMessage());
+                    */
+                }
+            }
+        }
+        return listCommits;
+    }
+
+    public boolean isConnected() {
+        return git != null && git.getRepository() != null;
     }
 }
