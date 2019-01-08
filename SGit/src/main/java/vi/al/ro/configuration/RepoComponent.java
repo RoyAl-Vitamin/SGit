@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -46,25 +47,19 @@ public class RepoComponent {
         this.path = path;
     }
 
-    public void cloneRepo() {
+    public void cloneRepo() throws IOException, GitAPIException {
         logger.info("repo name == " + name + " path == " + path + " tmpdir == " + System.getProperty("java.io.tmpdir"));
-        try {
-            localPath = File.createTempFile(name, "");
-            Files.delete(localPath.toPath());
-        } catch (IOException iOE) {
-            logger.error("IOException == ", iOE);
-        }
+
+        localPath = File.createTempFile(name, "");
+        Files.delete(localPath.toPath());
+
         logger.info("localPath == " + localPath.getAbsolutePath());
 
-        try {
-            git = Git.cloneRepository()
-                    .setURI(path)
-                    .setDirectory(localPath)
-                    .setCloneAllBranches(true)
-                    .call();
-        } catch (GitAPIException gAPIE) {
-            logger.error("GitAPIException == ", gAPIE);
-        }
+        git = Git.cloneRepository()
+                .setURI(path)
+                .setDirectory(localPath)
+                .setCloneAllBranches(true)
+                .call();
     }
 
     public List<String> getBranches() {
@@ -188,12 +183,6 @@ public class RepoComponent {
 
                 if (foundInThisBranch) {
                     listCommits.add(commit);
-                    /*
-                    System.out.println(commit.getName());
-                    System.out.println(commit.getAuthorIdent().getName());
-                    System.out.println(new Date(commit.getCommitTime() * 1000L));
-                    System.out.println(commit.getFullMessage());
-                    */
                 }
             }
         }
@@ -202,5 +191,22 @@ public class RepoComponent {
 
     public boolean isConnected() {
         return git != null && git.getRepository() != null;
+    }
+
+    /**
+     * Open existing repo
+     */
+    public void openRepo() throws IOException {
+        localPath = new File(path);
+//        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+//        Repository repository = repositoryBuilder.setGitDir(new File(this.name + "/.git"))
+//                .readEnvironment() // scan environment GIT_* variables
+//                .findGitDir() // scan up the file system tree
+//                .setMustExist(true)
+//                .build();
+        File file = new File(this.path + "/.git");
+        if (!file.exists()) throw new FileNotFoundException();
+        git = Git.open(file);
+        git.checkout();
     }
 }

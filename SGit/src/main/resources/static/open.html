@@ -1,15 +1,13 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.thymeleaf.org ">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Spring Boot Thymeleaf</title>
+    <meta charset="UTF-8">
+    <title>Create repo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.3/css/bootstrap.min.css"/>
     <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css"/>
 </head>
-
 <body>
-
 <nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
@@ -22,13 +20,19 @@
     <div class="starter-template">
         <h1>Spring Boot Web Thymeleaf Example</h1>
     </div>
-    <div>
-        <a href="/create.html">Create</a>
-        <a href="/open.html">Open existing repo</a>
-        <a href="/clone.html">Clone</a>
-    </div>
-</div>
-<script type="text/javascript" src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <br>
+    <form method="post" action="/open">
 
+        <label for="name">Enter a name:</label>
+        <input type="text" name="name" id="name" size="30" required>
+
+        <br>
+
+        <label for="path">Enter a path to repo:</label>
+        <input type="text" name="path" id="path" required>
+
+        <input type="submit" value="Open">
+    </form>
+</div>
 </body>
 </html>

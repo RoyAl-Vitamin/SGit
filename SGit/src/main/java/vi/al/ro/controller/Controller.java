@@ -1,5 +1,6 @@
 package vi.al.ro.controller;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -16,6 +17,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * http://www.vogella.com/tutorials/JGit/article.html
+ */
 @org.springframework.stereotype.Controller
 public class Controller {
 
@@ -32,6 +36,25 @@ public class Controller {
         return "redirect:/index.html";
     }
 
+    @RequestMapping("/open")
+    public String indexOpen(Map<String, Object> model, @RequestBody MultiValueMap<String, String> formData) {
+
+        String repoName = formData.getFirst("name");
+        String repoPath = formData.getFirst("path");
+
+        repo.setName(repoName);
+        repo.setPath(repoPath);
+
+        try {
+            repo.openRepo();
+        } catch (IOException e) {
+            model.put("message", "Произошла ошибка открытия репозотория: " + repo.getPath());
+            return "redirect:/500.html";
+        }
+
+        return "redirect:/repo";
+    }
+
     @RequestMapping("/clone")
     public String indexClone(Map<String, Object> model, @RequestBody MultiValueMap<String, String> formData) {
 
@@ -41,7 +64,13 @@ public class Controller {
         repo.setName(repoName);
         repo.setPath(repoPath);
 
-        repo.cloneRepo();
+        try {
+            repo.cloneRepo();
+        } catch (IOException | GitAPIException e) {
+            logger.error("Ошибка: ", e);
+            model.put("message","Произошла ошибка клонирования репо: " + repo.getPath());
+            return "redirect:/500.html";
+        }
 
         return "redirect:/repo";
     }
